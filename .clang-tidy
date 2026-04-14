@@ -1,0 +1,13 @@
+Checks: '-*,readability-identifier-naming'
+
+CheckOptions:
+  # General fallback to CamelCase
+  - { key: readability-identifier-naming.DefaultCase, value: camelBack }
+  
+  # Specific overrides
+  - { key: readability-identifier-naming.ClassCase, value: CamelCase }
+  - { key: readability-identifier-naming.FunctionCase, value: camelBack }
+  - { key: readability-identifier-naming.VariableCase, value: camelBack }
+  - { key: readability-identifier-naming.NamespaceCase, value: lower_case }
+  - { key: readability-identifier-naming.EnumConstantCase, value: UPPER_CASE }
+

@@ -1,0 +1,5 @@
+!func4(a:int,b:fn(int,int)->int)->int{
+  let x:int = 23 + ab & 3 <= 5;
+  let s:string = "hello world";
+  return b(a, x);
+}
