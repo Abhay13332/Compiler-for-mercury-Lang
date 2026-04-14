@@ -1,6 +1,7 @@
 #ifndef ASTNODE_H
 #define ASTNODE_H
 
+#include <concepts>
 #include <string>
 #include <sys/select.h>
 #include <vector>
@@ -22,6 +23,7 @@ enum primitiveType{
     PT_DOUBLE,
     PT_FLOAT,
     PT_STRING,
+    PT_LONG
 };
 struct PrimitiveTyp:Type  {
     primitiveType type;
@@ -87,18 +89,57 @@ struct TrueExpr:Expr{};
 enum binaryOperators{
   B_ADD,B_SUB,B_MUL,B_DIV,B_REM,B_POW,
 
+
   B_GT,B_LT,B_GTE,B_LTE,B_NTE,B_EQ,
 
-  B_AND,B_OR,B_XOR,B_NEG,
+  B_AND,B_OR,B_XOR,
 
   B_LOGOR,B_LOGAND,
 
 };
+enum unaryOperator{
+ U_INC,U_DEC,
+ U_NEG,
+};
+
+namespace literals{
+struct IntExpr:Expr{
+    int value;
+};
+struct StringExpr:Expr{
+    std::string value;
+
+};
+struct LongExpr:Expr{
+    long long value;
+};
+struct FloatExpr:Expr{
+    float value;
+};
+struct DoubleExpr:Expr{
+    double value;
+};
+};
+
+
 struct BinaryExpr:Expr{
   Expr* left;
   Expr* right;
-  
-}
+  binaryOperators op;
+
+};
+struct UnaryOp  {
+    Expr* desendent;
+    Expr* op;
+};
+struct CallExpr:Expr{
+  Expr* callee;
+  std::vector<Expr*> args;
+};
+
+
+
+
 
 
 
