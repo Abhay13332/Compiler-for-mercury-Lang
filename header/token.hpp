@@ -57,7 +57,9 @@ enum tokenT{
   TOK_MEM_ALLOC,
   TOK_PRIVATE,
   TOK_PUB,
-  TOK_EDIT
+  TOK_EDIT,
+  TOK_EOF,
+  TOK_QUESTION
 
 
 
@@ -65,19 +67,43 @@ enum tokenT{
 struct Pos{
    int line;
    int pos;
+   Pos addto(int pos=0,int line=0){
+      Pos cp=*this;
+      cp.line+=line;
+      cp.pos+=pos;
+      return cp;
+   };
+
 };
 class Token{
   public:
     
     tokenT type;
     std::string value;
-    Pos posstart;
-    Pos posend;
-    Token(tokenT type,std::string value,Pos posstart,Pos posend):type(type),value(value ),posstart(posstart),posend(posend){}
-
+    Pos startPos;
+    Pos endPos;
+    Token(tokenT type,std::string value,Pos posstart,Pos posend):type(type),value(value ),startPos(posstart),endPos(posend){}
+    Token()=default;
+   friend std::ostream& operator<<(std::ostream& os, const Token& obj);
+   friend std::string operator+(const std::string& str,const Token& tkn){
+      std::string fin;
+      fin.append(str);
+      fin.append(magic_enum::enum_name<tokenT>(tkn.type));
+      fin.append(":"+tkn.value);
+      return fin;
+   }
+   friend std::string operator+(const Token& tkn,const std::string& str){
+      std::string fin;
+      fin.append(magic_enum::enum_name<tokenT>(tkn.type));
+      fin.append(":"+tkn.value);
+      fin.append(str);
+      return fin;
+   }
 
 };
-
+std::ostream& operator<<(std::ostream& os, const Token& obj){
+          os<<magic_enum::enum_value<tokenT>(obj.type)<<":"<<obj.value;
+        return os; }
 class Tokenizer{
 std::ifstream file;
 int lineno=0;
@@ -264,6 +290,8 @@ std::vector<Token> tokenize(){
      else if(ch=='.')tkn.emplace_back(TOK_DOT,std::string(),currPos,currPos);
      else if(ch==':')tkn.emplace_back(TOK_COLON,std::string(),currPos,currPos);
      else if(ch==';')tkn.emplace_back(TOK_SEMICOLON,std::string(),currPos,currPos);
+     else if(ch=='?')tkn.emplace_back(TOK_QUESTION,std::string(),currPos,currPos);
+
      else if(ch=='!'){
        if(peekValid()=='='){
          getValid();

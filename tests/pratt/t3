@@ -1,0 +1,9 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
+objectName( (a + b) * c ).map( !|x|-> {return x.fn();} )[ getIndex(5) ]( (1 + 2), !true ).value
+=======
+( (a + b) * c ).map( !(x) {return x.fn();} )[ getIndex(5) ]( (1 + 2), !true ).value
+>>>>>>> c61082a (adding ast class)
+=======
+objectName( (a + b) * c ).map( !|x|-> {return x.fn();} )[ getIndex(5) ]( (1 + 2), !true ).value
+>>>>>>> f10cad2 (design  AST Nodes complete)

@@ -8,16 +8,17 @@ class iterator{
   iterator<typeobj> next(iterator:iterator<typeobj>,steps:int){}
   bool check_valid(){} 
 }
-encaps class User{
+ class User inh{
+encaps class User inh{
    let name:stirng;
    let age:stirng;
-  
+   
 }
 
 class classname{
   
 }
-!funcname(a:int,b:int)->int=a+b
+!funcname(a:int,b:int)->int=a+b;
 !func2( a:int,b:int)->int{
   return a+b;
 }
@@ -30,9 +31,9 @@ func2.return(!(this) this.newvar);
   for it_name (1..10,2){
 
   }
-  for it_name (iteratorable_class,step){
+  for (iteratorable_class,step){
 
-  }
+  }           
   let i:int=4;
   while (i<20){
     i++;
