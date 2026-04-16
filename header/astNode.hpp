@@ -1,49 +1,82 @@
 #ifndef ASTNODE_H
 #define ASTNODE_H
 
-#include <concepts>
 #include <string>
 #include <sys/select.h>
 #include <vector>
 #include <token.hpp>
 struct Node{
     virtual ~Node()=default;
-    Node(Node&)=delete;
+    Node(Node&)=default;
+    Node(Node&&)=default;
+    Node()=default;
+
     Pos startPos;
     Pos endPos;
+    Node(Pos startpos,Pos endPos ):startPos(startpos),endPos(endPos){};
 };
 struct Expr:Node{};
 struct Stmt:Node{};
-struct Type :Node{};
-struct Program:Node{
+struct Type :public Node{
+    Type()=default;
+    Type(Pos startpos,Pos endPos):Node(startpos,endPos){}
+};
+struct AutoType:Type{};
+struct ProgramNode:Node{
     std::vector<Stmt*> stmts;
 };
-enum primitiveType{
+enum primitives{
     PT_INT,
     PT_DOUBLE,
     PT_FLOAT,
     PT_STRING,
     PT_LONG
 };
-struct PrimitiveTyp:Type  {
-    primitiveType type;
-    bool ref;
+struct PrimitiveType:Type  {
+    primitives type;
+  
+    PrimitiveType(primitives type ,Pos startpos=Pos(),Pos endpos=Pos()):type(type),Type(startpos,endpos){}
 };
+
+  
+struct ExprStmt:Stmt  {
+    Expr* expr;
+};
+struct RefType:Type  {
+    Type* origType;
+    
+};
+
 struct DeclaredType:Type  {
     std::string name;
-    bool ref;
+    DeclaredType(std::string name="",Pos stpos=Pos(),Pos endpos=Pos()):name(name),Type(stpos,endpos){}
 
 };
-struct FunctionType:Type{
-    std::vector<Type> argsType;
-    Type returnType;
-    bool ref;
+ 
+
+struct ArrType:Type{//[]
+      Type* origType;
 };
+struct OptionalType:Type{
+    Type* tp;
+};
+struct FunctionType:Type{
+    std::vector<Type*> argsType;
+    Type* returnType;
+};
+
+
 struct BlockExpr:Expr  {
     std::vector<Stmt*> stmts;
     Expr* value;
 };
-struct DeclStmt:Stmt  {
+struct IFExpr:Expr{
+   Expr* condition;
+   BlockExpr* onCondTrue;
+   Expr* orElse; 
+};
+
+struct DeclStmt:Stmt{
     std::string name;
 };
 struct VarDeclStmt:DeclStmt{
@@ -51,10 +84,9 @@ struct VarDeclStmt:DeclStmt{
     Expr* value;
 };
 struct FuncDeclStmt:DeclStmt  {
-    std::string name;
     Type* returnType;
-    std::vector<std::pair<std::string,Type>> args;
-    BlockExpr* stmtBlock;
+    std::vector<std::pair<std::string,Type*>> args;
+    BlockExpr* block;
 };
 struct EditFuncDeclStmt:FuncDeclStmt{};
 struct ClassDeclStmt :DeclStmt {
@@ -63,17 +95,14 @@ struct ClassDeclStmt :DeclStmt {
     std::vector<DeclStmt*> privateStmts;
 };
 struct AssignmentStmt:Stmt  {
-    std::string identifier;
+    Expr* target;
+  
     Expr* value;
 };
-struct IFStmt:Stmt{
-   Expr* condition;
-   BlockExpr* onCondTrue;
-   BlockExpr* orElse; 
-};
+
 struct ForStmt:Stmt  {
     Expr* iterator;
-    int steps;
+    Expr* steps;
     BlockExpr* block;
 };
 struct WhileStmt:Stmt  {
@@ -86,6 +115,8 @@ struct ReturnStmt:Stmt{
 struct ContinueStmt:Stmt{};
 struct BreakStmt:Stmt{};
 struct TrueExpr:Expr{};
+struct FalseExpr:Expr{};
+
 enum binaryOperators{
   B_ADD,B_SUB,B_MUL,B_DIV,B_REM,B_POW,
 
@@ -110,6 +141,8 @@ struct StringExpr:Expr{
     std::string value;
 
 };
+
+
 struct LongExpr:Expr{
     long long value;
 };
@@ -121,23 +154,39 @@ struct DoubleExpr:Expr{
 };
 };
 
-
 struct BinaryExpr:Expr{
   Expr* left;
   Expr* right;
   binaryOperators op;
 
 };
-struct UnaryOp  {
+ struct UnaryExpr:Expr {
     Expr* desendent;
     Expr* op;
 };
-struct CallExpr:Expr{
+
+struct CallExpr:Expr{//call(...args)
   Expr* callee;
   std::vector<Expr*> args;
 };
-
-
+struct ObjectMemberExpr:Expr  {///obj.menbername
+    Expr* object;
+    std::string memberName;
+};
+struct ObjectIdxExpr:Expr{//obj[idx]
+    Expr* object;
+    Expr* idx;
+ };
+struct IdentifierExpr:Expr  {
+    std::string name;
+};
+struct ThisExpr:Expr  {};
+struct SuperExpr:Expr{};
+struct LambdaExpr:Expr{
+    Type* returnType;
+    std::vector<std::pair<std::string,Type>> args;
+    BlockExpr* stmtBlock;
+};
 
 
 
