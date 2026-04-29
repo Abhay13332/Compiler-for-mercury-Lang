@@ -16,14 +16,14 @@ Expr* lambdaExprpr();
 Expr* ifElsePr();
 
 class PrattParser {
-    using NudFunc = std::function<Expr*(Token)>;
-    using LedFunc = std::function<Expr*(Token,Expr*)>;
+    using nudFunc = std::function<Expr*(Token)>;
+    using ledFunc = std::function<Expr*(Token,Expr*)>;
 
     std::vector<Token> tokens;
     int pos = 0;
 
-    std::unordered_map<tokenT,NudFunc> nud; //parse token at start of expression
-    std::unordered_map<tokenT,LedFunc> led; //parse token with left operand
+    std::unordered_map<tokenT,nudFunc> nud; //parse token at start of expression
+    std::unordered_map<tokenT,ledFunc> led; //parse token with left operand
     std::unordered_map<tokenT,int> bp; //binding power or operator precedence
 
     public:
