@@ -8,7 +8,6 @@ class iterator{
   iterator<typeobj> next(iterator:iterator<typeobj>,steps:int){}
   bool check_valid(){} 
 }
- class User inh{
 encaps class User inh{
    let name:stirng;
    let age:stirng;

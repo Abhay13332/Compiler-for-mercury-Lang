@@ -15,6 +15,7 @@ enum tokenT{
  
   TOK_ARTH_OP,//+,-,*,/,%, **
   TOK_RELATION_OP,// >,<,>=,<=,!=,==
+  TOK_UNARY_OP,// --,++,~
   TOK_BINARY_OP,//&,|,^,~ 
   TOK_LOGIC_OP,//,&&,||
   TOK_DOT,//yes
@@ -260,12 +261,19 @@ std::vector<Token> tokenize(){
       Pos currPos=getCurrentpos(1);
      if(ch=='"'){
       tkn.push_back(stringLiteral());
-     }else if(ch=='+'||ch=='/'||ch=='^'||ch=='%'||ch=='~'){
-        tkn.emplace_back((ch=='^'||ch=='~')?TOK_BINARY_OP:TOK_ARTH_OP,std::string(1,ch),currPos,currPos);
+     }else if(ch=='+'||ch=='/'||ch=='^'||ch=='%'){
+      if(ch=='+'&& peekValid()=='+'){
+         getValid();
+         tkn.emplace_back(TOK_UNARY_OP,std::string("++"),currPos,currPos);
+      }else tkn.emplace_back((ch=='^')?TOK_BINARY_OP:TOK_ARTH_OP,std::string(1,ch),currPos,currPos);
      }else if(ch=='-'){
       if(peekValid()=='>'){
        getValid();
        tkn.emplace_back(TOK_ARROW,std::string(),currPos,currPos);
+      }else if(peekValid()=='-'){
+     getValid();
+       tkn.emplace_back(TOK_UNARY_OP,std::string("--"),currPos,currPos);
+
       }else{
          tkn.emplace_back(TOK_ARTH_OP,"-",currPos,currPos);
       }
@@ -290,6 +298,7 @@ std::vector<Token> tokenize(){
      else if(ch=='.')tkn.emplace_back(TOK_DOT,std::string(),currPos,currPos);
      else if(ch==':')tkn.emplace_back(TOK_COLON,std::string(),currPos,currPos);
      else if(ch==';')tkn.emplace_back(TOK_SEMICOLON,std::string(),currPos,currPos);
+     if(ch=='~')tkn.emplace_back(TOK_UNARY_OP,std::string("~"),currPos,currPos);
      else if(ch=='?')tkn.emplace_back(TOK_QUESTION,std::string(),currPos,currPos);
 
      else if(ch=='!'){

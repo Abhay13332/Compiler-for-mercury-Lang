@@ -40,10 +40,10 @@ struct PrimitiveType:Type  {
 
   
 struct ExprStmt:Stmt  {
-    Expr* expr;
+    Expr* expr=nullptr;
 };
 struct RefType:Type  {
-    Type* origType;
+    Type* origType=nullptr;
     
 };
 
@@ -55,38 +55,38 @@ struct DeclaredType:Type  {
  
 
 struct ArrType:Type{//[]
-      Type* origType;
+      Type* origType=nullptr;
 };
 struct OptionalType:Type{
-    Type* tp;
+    Type* tp=nullptr;
 };
 struct FunctionType:Type{
     std::vector<Type*> argsType;
-    Type* returnType;
+    Type* returnType=nullptr;
 };
 
 
 struct BlockExpr:Expr  {
     std::vector<Stmt*> stmts;
-    Expr* value;
+    Expr* value=nullptr;
 };
 struct IFExpr:Expr{
-   Expr* condition;
-   BlockExpr* onCondTrue;
-   Expr* orElse; 
+   Expr* condition=nullptr;
+   BlockExpr* onCondTrue=nullptr;
+   Expr* orElse=nullptr; 
 };
 
 struct DeclStmt:Stmt{
     std::string name;
 };
 struct VarDeclStmt:DeclStmt{
-    Type* type;   
-    Expr* value;
+    Type* type=nullptr;   
+    Expr* value=nullptr;
 };
 struct FuncDeclStmt:DeclStmt  {
-    Type* returnType;
+    Type* returnType=nullptr;
     std::vector<std::pair<std::string,Type*>> args;
-    BlockExpr* block;
+    BlockExpr* block=nullptr;
 };
 struct EditFuncDeclStmt:FuncDeclStmt{};
 struct ClassDeclStmt :DeclStmt {
@@ -95,22 +95,22 @@ struct ClassDeclStmt :DeclStmt {
     std::vector<DeclStmt*> privateStmts;
 };
 struct AssignmentStmt:Stmt  {
-    Expr* target;
+    Expr* target=nullptr;
   
-    Expr* value;
+    Expr* value=nullptr;
 };
 
 struct ForStmt:Stmt  {
-    Expr* iterator;
-    Expr* steps;
-    BlockExpr* block;
+    Expr* iterator=nullptr;
+    Expr* steps=nullptr;
+    BlockExpr* block=nullptr;
 };
 struct WhileStmt:Stmt  {
-    Expr* condition;
-    BlockExpr* block;
+    Expr* condition=nullptr;
+    BlockExpr* block=nullptr;
 };
 struct ReturnStmt:Stmt{
-    Expr* value;
+    Expr* value=nullptr;
 };
 struct ContinueStmt:Stmt{};
 struct BreakStmt:Stmt{};
@@ -131,6 +131,7 @@ enum binaryOperators{
 enum unaryOperator{
  U_INC,U_DEC,
  U_NEG,
+ U_BIT_NOT
 };
 
 namespace literals{
@@ -155,27 +156,27 @@ struct DoubleExpr:Expr{
 };
 
 struct BinaryExpr:Expr{
-  Expr* left;
-  Expr* right;
+  Expr* left=nullptr;
+  Expr* right=nullptr;
   binaryOperators op;
 
 };
- struct UnaryExpr:Expr {
+struct UnaryExpr:Expr {
     Expr* desendent;
-    Expr* op;
+    unaryOperator op;
+    bool isPrefix=false;
 };
-
 struct CallExpr:Expr{//call(...args)
-  Expr* callee;
+  Expr* callee=nullptr;
   std::vector<Expr*> args;
 };
 struct ObjectMemberExpr:Expr  {///obj.menbername
-    Expr* object;
+    Expr* object=nullptr;
     std::string memberName;
 };
 struct ObjectIdxExpr:Expr{//obj[idx]
-    Expr* object;
-    Expr* idx;
+    Expr* object=nullptr;
+    Expr* idx=nullptr;
  };
 struct IdentifierExpr:Expr  {
     std::string name;
@@ -183,9 +184,9 @@ struct IdentifierExpr:Expr  {
 struct ThisExpr:Expr  {};
 struct SuperExpr:Expr{};
 struct LambdaExpr:Expr{
-    Type* returnType;
+    Type* returnType=nullptr;
     std::vector<std::pair<std::string,Type>> args;
-    BlockExpr* stmtBlock;
+    BlockExpr* stmtBlock=nullptr;
 };
 
 
